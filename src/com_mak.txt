@@ -1,0 +1,3 @@
+TOLSET	= $(DEPTH)../tolset/
+
+NASK	= $(TOLSET)nask
