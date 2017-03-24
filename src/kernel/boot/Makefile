@@ -1,12 +1,14 @@
+DEPTH = ../../../
+include ../../com_mak.txt
 
-%.o:%.c
-	gcc -m32 -nostdlib -I. -c $<
+IPL_SRC	= ipl.nask
+IPL_BIN	= ipl.bin
 
-#%.elf:%.S
-#	gcc -m32 -I. -oformat=binary -nostdlib --entry=entry -Ttext 0x100000  $< -o $@
 
-#%.o:%.S
-#	gcc -I. -c $< -o $@
 
-%.elf:%.o
-	ld --oformat=binary --entry=entry -Ttext 0x100000 -o $@ $<
+ipl : 
+	make $(IPL_BIN)
+
+grub :
+	$(info sorry)
+

@@ -1,0 +1,10 @@
+GRUBではカーネルが0x00100000にロードされるので、GRUBを使わない場合でもそれに合わせる。
+HELIOS.sysがカーネル本体
+
+・ブートプロセス
+
+ブートローダー(GRUB or ipl.bin&loader.bin)	: 16bit
+↓
+boot.S				: カーネル本体の読み込み(32bit)
+↓
+kernel.sys

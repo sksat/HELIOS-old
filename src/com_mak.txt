@@ -1,3 +1,20 @@
-TOLSET	= $(DEPTH)../tolset/
+TOLSET	= $(DEPTH)tolset/
+Z_TOOLS	= $(TOLSET)z_tools/
 
-NASK	= $(TOLSET)nask
+MAKE	= make -r
+NASK	= $(Z_TOOLS)nask
+CC1	= $(Z_TOOLS)gocc1 -I $(INCPATH) -Os -Wall -quiet
+GAS2NASK= $(Z_TOOLS)gas2nask -a
+
+
+%.gas  : %.c
+	$(CC1) -o $@ $<
+
+%.nask : %.gas
+	$(GAS2NASK) $< $@
+
+%.obj  : %.nask
+	$(NASK) $< $@ $*.lst
+
+%.bin  : %.nask
+	$(NASK) $< $@ $*.lst

@@ -1,6 +1,6 @@
 TARGET = HELIOS
 
-BUILD = build/
+BUILD_DIR = build/
 
 %.o:%.c
 	gcc -c $<
@@ -21,8 +21,8 @@ qemurun_iso:
 iso:
 	make $(TARGET).iso
 
-build:$(BUILD)/kernel.elf
-	cp src/kernel/kernel.elf $(BUILD)
+build:
+	make -C src build BUILD_DIR=$(BUILD_DIR)
 
 $(TARGET).iso:
 	make build
