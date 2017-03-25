@@ -11,4 +11,5 @@ default	:
 $(SYS)	: $(SYS_OBJS)
 	ld -T $(LDSCRIPT) -Map kernel.map -nostdlib --oformat binary -o $@ $^
 
-
+build:
+	@echo "neko!w"

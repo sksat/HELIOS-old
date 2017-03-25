@@ -44,8 +44,9 @@ build:
 	mkdir $(BUILD_DIR)
 	echo "hoge" > build/a
 	echo "fuga" > build/b
+	make -C src build
 ifeq ($(DISK_TYPE),fd)
-	sh disk.sh $(DISK_FILE) addmbr src/kernel/boot/ipl.bin
+	sh disk.sh $(DISK_FILE) addmbr $(BUILD_DIR)boot/mbr.bin
 endif
 	sh disk.sh $(DISK_FILE) adddir $(BUILD_DIR)
 
