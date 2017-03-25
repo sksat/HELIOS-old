@@ -5,6 +5,10 @@ add() {
 }
 
 create() {
+	if [ -e ${DISK} ]; then
+		echo "disk file : '${DISK}' is already exist"
+		return
+	fi
 	if [ ${TYPE} = "fd" ]; then
 		dd if=/dev/zero of=${DISK} bs=1k count=1440
 	fi
