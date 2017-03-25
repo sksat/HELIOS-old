@@ -3,48 +3,48 @@ TARGET = HELIOS
 BUILD_DIR = build/
 
 FDIMG	= HELIOS.img
-ISO	= HELIOS.iso
+CDIMG	= HELIOS.iso
 
-CDSIZE	= 512
-
-%.o:%.c
-	gcc -c $<
+export
 
 default:
-	make iso
+	make fdimg
 
 run:
 	make qemurun
 
 qemurun:
-	make qemurun_iso
+	make qemurun_fdimg
 
-qemurun_iso:
-	make iso
-	qemu-system-x86_64 -drive format=raw,file=$(TARGET).iso
+qemurun_fdimg:
+	make fdimg
+	qemu-system-x86_64 -fda $(FDIMG)
+
+qemurun_cdimg:
+	make cdimg
+	qemu-system-x86_64 -drive format=raw,file=$(CDIMG)
 
 fdimg:
-	dd if=/dev/zero of=$(FDIMG) bs=1k count=1440
-	mkdosfs $(FDIMG)
+	$(eval DISK_TYPE := fd)
 	$(eval DISK_FILE := $(FDIMG))
+	make img
 	make build
 
 cdimg:
-	dd if=/dev/zero of=$(ISO) bs=1M count=$(CDSIZE)
-	mkdosfs $(ISO)
-	$(eval DISK_FILE := $(ISO))
+	$(eval DISK_TYPE := cd)
+	$(eval DISK_FILE := $(CDIMG))
+	make img
 	make build
+
+img:
+	sh disk.sh $(DISK_FILE) create $(DISK_TYPE)
 
 build:
 	mkdir $(BUILD_DIR)
-	sudo losetup /dev/loop0 $(DISK_FILE)
-	mkfs -t vfat /dev/loop0
-	sudo mount -t vfat /dev/loop0 /mnt/HELIOS
-	make -C src build BUILD_DIR=/mnt/HELIOS
-	sudo umount /mnt/HELIOS
-	losetup -d /dev/loop0
-	rm -r $(BUILD_DIR)
+ifeq ($(DISK_TYPE),fd)
+	sh disk.sh $(DISK_FILE) addmbr src/kernel/boot/ipl.bin
+endif
 
 clean:
-	rm -r $(BUILD_DIR)
+	rm -fr $(BUILD_DIR)
 
