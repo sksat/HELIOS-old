@@ -5,6 +5,6 @@ HELIOS.sysがカーネル本体
 
 ブートローダー(GRUB or ipl.bin&loader.bin)	: 16bit
 ↓
-boot.S				: カーネル本体の読み込み(32bit)
+boot.S				: 初期設定(32bit)
 ↓
-kernel.sys
+kernel.sys			: C/C++

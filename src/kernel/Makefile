@@ -1,14 +1,14 @@
 DEPTH = ../../
 include ../com_mak.txt
 
-KERNEL	= HELIOS.sys
+KERNEL	= kernel.img
 
 default:
-	make $(KERNEL)
+	touch $(KERNEL)
 
 ipl:
 	make -C boot ipl
 
 kernel:
-	
+	@echo 'hoge'
 
