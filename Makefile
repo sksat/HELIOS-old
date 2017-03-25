@@ -1,9 +1,10 @@
 TARGET = HELIOS
 
-BUILD_DIR = build/
+BUILD_DIR := build/
+BUILDED_FILES = $(wildcard $(BUILD_DIR)*.a)
 
-FDIMG	= HELIOS.img
-CDIMG	= HELIOS.iso
+FDIMG	:= HELIOS.img
+CDIMG	:= HELIOS.iso
 
 export
 
@@ -41,10 +42,14 @@ img:
 
 build:
 	mkdir $(BUILD_DIR)
+	echo "hoge" > build/a
+	echo "fuga" > build/b
 ifeq ($(DISK_TYPE),fd)
 	sh disk.sh $(DISK_FILE) addmbr src/kernel/boot/ipl.bin
 endif
+	sh disk.sh $(DISK_FILE) adddir $(BUILD_DIR)
 
 clean:
 	rm -fr $(BUILD_DIR)
+	rm -f $(FDIMG) $(CDIMG)
 

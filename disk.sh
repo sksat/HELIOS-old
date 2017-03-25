@@ -1,7 +1,16 @@
 EDIMG="tolset/z_tools/edimg"
 
 add() {
-	${EDIMG} imgin:${DISK} copy from:${FILE} to:@: imgout:${DISK}
+	echo $@
+	for file in $@
+	do
+		case $file in
+			$0 ) ;;
+			${DISK} ) ;;
+			"add" ) ;;
+			* ) ${EDIMG} imgin:${DISK} copy from:$file to:@: imgout:${DISK} ;;
+		esac
+	done
 }
 
 create() {
@@ -25,8 +34,12 @@ addmbr() {
 DISK=$1
 
 if [ $2 = "add" ]; then
-	FILE=$3
-	add
+	add $@
+fi
+
+if [ $2 = "adddir" ]; then
+	dir_files=$3*
+	add $dir_files
 fi
 
 if [ $2 = "create" ]; then
