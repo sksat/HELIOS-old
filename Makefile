@@ -28,27 +28,29 @@ qemurun_cdimg:
 fdimg:
 	$(eval DISK_TYPE := fd)
 	$(eval DISK_FILE := $(FDIMG))
-	make img
 	make build
+	make img
 
 cdimg:
 	$(eval DISK_TYPE := cd)
 	$(eval DISK_FILE := $(CDIMG))
-	make img
 	make build
+	make img
 
 img:
+ifeq ($(DISK_TYPE),fd)
 	sh disk.sh $(DISK_FILE) create $(DISK_TYPE)
+	sh disk.sh $(DISK_FILE) addmbr $(BUILD_DIR)boot/mbr.bin
+	sh disk.sh $(DISK_FILE) adddir $(BUILD_DIR)
+else
+	grub-mkrescue -o $(DISK_FILE) $(BUILD_DIR)
+endif
 
 build:
 	mkdir $(BUILD_DIR)
 	echo "hoge" > build/a
 	echo "fuga" > build/b
 	make -C src build
-ifeq ($(DISK_TYPE),fd)
-	sh disk.sh $(DISK_FILE) addmbr $(BUILD_DIR)boot/mbr.bin
-endif
-	sh disk.sh $(DISK_FILE) adddir $(BUILD_DIR)
 
 clean:
 	make -C src clean
