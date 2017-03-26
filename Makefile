@@ -38,6 +38,7 @@ fdimg:
 cdimg:
 	$(eval DISK_TYPE := cd)
 	$(eval DISK_FILE := $(CDIMG))
+	$(eval GRUB := grub)
 	make build
 	make $(CDIMG)
 

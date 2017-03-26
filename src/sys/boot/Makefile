@@ -10,13 +10,23 @@ default:
 	make ipl
 
 build:
+	$(info --------- SET BOOT ---------)
+	$(info $(BOOTMODE))
+ifdef GRUB
+	$(info BOOT-MODE : GRUB)
 	mkdir -p $(DEPTH)$(BUILD_DIR)boot/grub
+	make build_grub
+else
+	$(info BOOT-MODE : IPL )
+	mkdir $(DEPTH)$(BUILD_DIR)boot
 	make build_ipl
-	cp $(MBR_BIN) $(DEPTH)$(BUILD_DIR)boot/
+endif
+	$(info ----------------------------)
 
 build_ipl:
 	make -C ipl build
 	cp $(IPL_BIN) $(MBR_BIN)
+	cp $(MBR_BIN) $(DEPTH)$(BUILD_DIR)boot/
 
 build_grub:
 	$(warning there is no MBR)
