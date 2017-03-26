@@ -9,7 +9,7 @@ default	:
 	make $(SYS)
 
 $(SYS)	: $(SYS_OBJS)
-	ld -T $(LDSCRIPT) -Map kernel.map -nostdlib --oformat binary -o $@ $^
+	@echo "neko!w"
 
 build:
 	@echo "neko!w"
