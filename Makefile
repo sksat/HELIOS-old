@@ -16,7 +16,7 @@ run:
 	make qemurun
 
 qemurun:
-	make qemurun_fdimg
+	make qemurun_cdimg
 
 qemurun_fdimg:
 	make fdimg
