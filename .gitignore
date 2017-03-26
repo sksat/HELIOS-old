@@ -1,5 +1,6 @@
 build
 tolset
+tmp
 
 # Object files
 *.o
