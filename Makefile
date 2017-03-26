@@ -1,6 +1,7 @@
 TARGET = HELIOS
 
 BUILD_DIR := build/
+MBR_BIN	= $(BUILD_DIR)boot/mbr.bin
 BUILDED_FILES = $(wildcard $(BUILD_DIR)*.a)
 
 FDIMG	:= HELIOS.img
@@ -25,26 +26,28 @@ qemurun_cdimg:
 	make cdimg
 	qemu-system-x86_64 -drive format=raw,file=$(CDIMG)
 
+img:
+	make fdimg
+
 fdimg:
 	$(eval DISK_TYPE := fd)
 	$(eval DISK_FILE := $(FDIMG))
 	make build
-	make img
+	make $(FDIMG)
 
 cdimg:
 	$(eval DISK_TYPE := cd)
 	$(eval DISK_FILE := $(CDIMG))
 	make build
-	make img
+	make $(CDIMG)
 
-img:
-ifeq ($(DISK_TYPE),fd)
+$(FDIMG):$(MBR_BIN)
 	sh disk.sh $(DISK_FILE) create $(DISK_TYPE)
-	sh disk.sh $(DISK_FILE) addmbr $(BUILD_DIR)boot/mbr.bin
+	sh disk.sh $(DISK_FILE) addmbr $(MBR_BIN)
 	sh disk.sh $(DISK_FILE) adddir $(BUILD_DIR)
-else
+
+$(CDIMG):$(BUILD_DIR)
 	grub-mkrescue -o $(DISK_FILE) $(BUILD_DIR)
-endif
 
 build:
 	mkdir $(BUILD_DIR)

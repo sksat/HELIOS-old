@@ -7,7 +7,7 @@ default:
 	make build
 
 build:
-	make -C kernel build
+	make -C sys build
 
 clean:
-	make -C kernel clean
+	make -C sys clean
