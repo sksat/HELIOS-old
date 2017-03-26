@@ -1,7 +1,7 @@
 DEPTH = ../../
 include ../com_mak.txt
 
-KERNEL	= kernel.img
+KERNEL	= HELIOS.img
 
 export
 

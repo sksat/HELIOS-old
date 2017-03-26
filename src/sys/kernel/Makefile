@@ -1,7 +1,7 @@
 DEPTH = ../../../
 include ../../com_mak.txt
 
-SYS	= HELIOS.sys
+SYS	= kernel.sys
 SYS_OBJS= main.obj
 LDSCRIPT= kernel.ld
 
