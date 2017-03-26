@@ -1,25 +1,27 @@
 DEPTH = ../../../
 include ../../com_mak.txt
 
-IPL_SRC	= ipl.nask
-IPL_BIN	= ipl.bin
-
+IPL_BIN	= ipl/ipl.bin
 MBR_BIN	= mbr.bin
+
+GRUB_CFG= grub/grub.cfg
 
 default:
 	make ipl
 
-ipl : 
-	make $(IPL_BIN)
-
-grub :
-	$(info sorry)
-
 build:
-	mkdir $(DEPTH)$(BUILD_DIR)boot
+	mkdir -p $(DEPTH)$(BUILD_DIR)boot/grub
 	make build_ipl
 	cp $(MBR_BIN) $(DEPTH)$(BUILD_DIR)boot/
 
 build_ipl:
-	make ipl
+	make -C ipl build
 	cp $(IPL_BIN) $(MBR_BIN)
+
+build_grub:
+	$(warning there is no MBR)
+	cp $(GRUB_CFG) $(DEPTH)$(BUILD_DIR)boot/grub/
+
+clean:
+	make -C ipl clean
+	rm -f $(MBR_BIN)

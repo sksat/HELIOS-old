@@ -17,3 +17,8 @@ kernel:
 build:
 	make -C boot build
 	make -C sys build
+
+clean:
+	make -C boot clean
+	make -C sys clean
+	rm -f $(KERNEL)

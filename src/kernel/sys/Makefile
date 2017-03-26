@@ -13,3 +13,7 @@ $(SYS)	: $(SYS_OBJS)
 
 build:
 	@echo "neko!w"
+	make
+
+clean:
+	rm -f $(SYS)

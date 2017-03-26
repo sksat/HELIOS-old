@@ -5,23 +5,23 @@
 
 .global entry
 
-.text
 .code32
-.align 8
+.section .boot
 
-entry:
-	jmp start
+.balign 8
+
+.extern main
 
 multiboot2_header:
 	.long MULTIBOOT2_HEADER_MAGIC
-	.long MULTIBOOT_ARCHITECTURE_i386
+	.long MULTIBOOT_ARCHITECTURE_I386
 	.long MULTIBOOTHEADER_SIZE
-	.long -(MULTIBOOT2_HEADER_MAGIC + MULTIBOOT_ARCHITECTURE_i386 + MULTIBOOTHEADER_SIZE)
+	.long -(MULTIBOOT2_HEADER_MAGIC + MULTIBOOT_ARCHITECTURE_I386 + MULTIBOOTHEADER_SIZE)
 
 align_tag_start:
 	.short MULTIBOOT_HEADER_TAG_MODULE_ALIGN
-	.short 0
-	.long align_tag_end - align_tag_start
+		.short 0
+		.long align_tag_end - align_tag_start
 align_tag_end:
 
 end_tag_start:
@@ -34,7 +34,14 @@ multiboot2_header_end:
 
 .text
 
-start:
+entry:
 	hlt
-	jmp start	// loop
+	jmp entry	// loop
+
+.data
+multiboot_info:
+	.long 0
+tmp_stack:
+	.skip 32
+
 

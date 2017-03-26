@@ -51,6 +51,10 @@ endif
 	sh disk.sh $(DISK_FILE) adddir $(BUILD_DIR)
 
 clean:
+	make -C src clean
 	rm -fr $(BUILD_DIR)
 	rm -f $(FDIMG) $(CDIMG)
 
+full:
+	make clean
+	make

@@ -9,3 +9,5 @@ default:
 build:
 	make -C kernel build
 
+clean:
+	make -C kernel clean
