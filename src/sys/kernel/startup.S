@@ -1,5 +1,5 @@
 #define ASM_FILE
-#include "multiboot2.h"
+#include "../boot/multiboot2.h"
 
 #define MULTIBOOTHEADER_SIZE (multiboot2_header_end - multiboot2_header)
 
@@ -10,7 +10,7 @@
 
 .balign 8
 
-.extern main
+.extern _start
 
 multiboot2_header:
 	.long MULTIBOOT2_HEADER_MAGIC

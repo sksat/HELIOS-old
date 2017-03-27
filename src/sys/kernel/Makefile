@@ -2,18 +2,18 @@ DEPTH = ../../../
 include ../../com_mak.txt
 
 SYS	= kernel.sys
-SYS_OBJS= main.obj
+SYS_OBJS= startup.obj main.obj
 LDSCRIPT= kernel.ld
 
 default	:
 	make $(SYS)
 
 $(SYS)	: $(SYS_OBJS)
-	@echo "neko!w"
+	ld -melf_i386 -Ttext=0x100000 $^ -o $@
 
 build:
-	@echo "neko!w"
 	make
+	cp $(SYS) $(DEPTH)$(BUILD_DIR)
 
 clean:
 	rm -f $(SYS)

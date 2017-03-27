@@ -5,12 +5,11 @@ IPL_BIN	= ipl/ipl.bin
 MBR_BIN	= mbr.bin
 
 GRUB_CFG= grub/grub.cfg
-BOOT_ELF= boot.elf
 
 default:
 	make ipl
 
-build: $(BOOT_ELF)
+build:
 	$(info --------- SET BOOT ---------)
 	$(info $(BOOTMODE))
 ifdef GRUB
@@ -22,7 +21,7 @@ else
 	mkdir $(DEPTH)$(BUILD_DIR)boot
 	make build_ipl
 endif
-	cp $(BOOT_ELF) $(DEPTH)$(BUILD_DIR)boot/
+	#cp $(BOOT_ELF) $(DEPTH)$(BUILD_DIR)boot/
 	$(info ----------------------------)
 
 build_ipl:$(IPL_BIN)
@@ -37,8 +36,4 @@ build_grub:$(GRUB_CFG)
 clean:
 	make -C ipl clean
 	rm -f $(MBR_BIN)
-
-$(BOOT_ELF):boot.o
-	ld -melf_i386 -Ttext=0x100000 $^ -o $@
-
 
