@@ -18,6 +18,9 @@ CXXFLAGS= -m32 -Os -Wall -Werror=return-type -nostdinc -nostdlib -fno-builtin -s
 %.nask : %.gas
 	$(GAS2NASK) $< $@
 
+%.obj  : %.S
+	gcc -c $< -o $@
+
 %.obj  : %.nask
 	$(NASK) $< $@ $*.lst
 
