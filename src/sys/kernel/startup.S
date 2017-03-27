@@ -11,6 +11,7 @@
 .balign 8
 
 .extern _start
+.extern main
 
 multiboot2_header:
 	.long MULTIBOOT2_HEADER_MAGIC
@@ -35,6 +36,7 @@ multiboot2_header_end:
 .text
 
 entry:
+	call main
 	hlt
 	jmp entry	// loop
 
