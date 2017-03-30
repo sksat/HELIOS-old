@@ -34,8 +34,9 @@ end_tag_end:
 multiboot2_header_end:
 
 .text
-
 entry:
+	cli
+	%ebx, (multiboot_info)
 	call main
 	hlt
 	jmp entry	// loop
