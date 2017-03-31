@@ -2,7 +2,7 @@ DEPTH = ../../../
 include ../../com_mak.txt
 
 SYS	= kernel.sys
-SYS_OBJS= startup.obj main.obj
+SYS_OBJS= startup.obj main.obj asmfunc.obj
 LDSCRIPT= kernel.ld
 
 default	:
