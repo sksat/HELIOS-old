@@ -1,58 +1,107 @@
 #include "../boot/multiboot2.h"
 #include "asmfunc.h"
 
-#define VRAM_TEXTMODE	0x000B8000
-#define MAX_X		80
-#define COL_BLACK	0x00
-#define COL_WHITE	0x0F
+class ScrnCtl {
+public:
+	void Init();
+protected:
+	static char *vram;
+	static int scrnx, scrny, bit;
+};
 
+char* ScrnCtl::vram;
+int ScrnCtl::scrnx	= 0;
+int ScrnCtl::scrny	= 0;
+int ScrnCtl::bit	= 0;
 
-void puttext_vram(char *str, int len, int x, int y){
-	unsigned short *vram_t, col;
-	vram_t = (unsigned short*)VRAM_TEXTMODE;
-	col = (COL_BLACK << 4) | (COL_WHITE & 0x0f);
-	vram_t += x + y*MAX_X;
-	for(int i=0;i<len;i++){
-		vram_t++;
-		*vram_t = (col << 8) | str[i];
+class QemuVgaCtl : public ScrnCtl {
+public:
+	QemuVgaCtl() {}
+	void ChangeMode(int scrnx, int scrny, int bit, bool clear_flg);
+private:
+	bool IsCorrectArgs(int scrnx, int scrny, int bit);
+	void SetQemuVgaReg(int reg, int data);
+};
+
+void ScrnCtl::Init(){
+	vram = nullptr;
+}
+
+bool QemuVgaCtl::IsCorrectArgs(int scrnx, int scrny, int bit){
+	switch(scrnx){
+	case 320:
+	case 640:
+	case 800:
+	case 1024:
+		break;
+	default:
+		return 0;
 	}
+
+	switch(scrny){
+	case 200:
+	case 240:
+	case 400:
+	case 480:
+	case 600:
+	case 768:
+		break;
+	default:
+		return 0;
+	}
+
+	switch(bit){
+	case 4:
+	case 8:
+	case 15:
+	case 16:
+	case 24:
+	case 32:
+		break;
+	default:
+		return 0;
+	}
+	return 1;
 }
 
-void set_qemuvga0reg(int reg, int dat)
-{
-    io_out16(0x01ce, reg);
-    io_out16(0x01cf, dat);
-    return;
+void QemuVgaCtl::ChangeMode(int scrnx, int scrny, int bit, bool clear_flg){
+	char flg;
+	if(!IsCorrectArgs(scrnx, scrny, bit)){
+		return;
+	}
+	SetQemuVgaReg(0x0004, 0x0000);
+	SetQemuVgaReg(0x0001, scrnx);
+	SetQemuVgaReg(0x0002, scrny);
+	SetQemuVgaReg(0x0003, bit);
+	SetQemuVgaReg(0x0005, 0x0000);
+	if(clear_flg){
+		flg = 0x41;
+	}else{
+		flg = 0xc1;
+	}
+	SetQemuVgaReg(0x0004, flg);
+
+	this->scrnx = scrnx;
+	this->scrny = scrny;
+	this->bit   = bit;
+
+	if((flg & 0x40) == 0){
+		this->vram = (char*) 0x000a0000;
+	}else{
+		this->vram = (char*) 0xe0000000;
+	}
+
+	return;
 }
 
-char* init_qemuvga0(int x, int y, int c, int flag)
-{
-    set_qemuvga0reg(0x0004, 0x0000);
-    set_qemuvga0reg(0x0001, x);
-    set_qemuvga0reg(0x0002, y);
-    set_qemuvga0reg(0x0003, c); /* 4, 8, 15, 16, 24, 32 */
-    set_qemuvga0reg(0x0005, 0x0000);
-    set_qemuvga0reg(0x0004, flag); /* リニアアクセスモードでVRAMの初期化をするなら0x41 */
-        /* bit7 : VRAM初期化抑制, bit6 : リニアアクセスモード, bit0 : 設定有効 */
-//    binfo->scrnx = x;
-//    binfo->scrny = y;
-//    binfo->vmode = c;
-    if ((flag & 0x40) == 0) {
-        return (char *) 0x000a0000;
-    } else {
-        return (char *) 0xe0000000;
-    }
+void QemuVgaCtl::SetQemuVgaReg(int reg, int dat){
+	io_out16(0x01ce, reg);
+	io_out16(0x01cf, dat);
 }
 
 int main(void){
-	char str[] = "welcome to HELIOS";
-	char str2[]= "this is a simple baremetal program by sksat.";
-	int len = sizeof(str);
-	int len2= sizeof(str2);
-	puttext_vram(str, len, 0, 0);
-	puttext_vram(str2, len2, 0, 2);
-
-	init_qemuvga0(800, 600, 8, 0xc1);
+	QemuVgaCtl vga_ctl;
+	vga_ctl.ChangeMode(800, 600, 8, 1);
 
 	for(;;);
 }
