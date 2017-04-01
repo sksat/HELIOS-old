@@ -9,10 +9,10 @@ CXX	= g++
 
 CXXFLAGS= -m32 -Os -Wall -Werror=return-type -nostdinc -nostdlib -fno-builtin -std=c++1y -fno-exceptions -fno-rtti -fno-use-cxa-atexit -fno-threadsafe-statics
 
-%.obj : %.cc
+%.o : %.cc
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-%.obj : %.cpp
+%.o : %.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 %.gas  : %.c
@@ -21,10 +21,10 @@ CXXFLAGS= -m32 -Os -Wall -Werror=return-type -nostdinc -nostdlib -fno-builtin -s
 %.nask : %.gas
 	$(GAS2NASK) $< $@
 
-%.obj  : %.S
+%.o  : %.S
 	gcc -m32 -c $< -o $@
 
-%.obj  : %.nask
+%.o  : %.nask
 	$(NASK) $< $@ $*.lst
 
 %.bin  : %.nask
