@@ -10,7 +10,7 @@ clean:
 	rm -f *.o *.bin
 
 hankaku.o : hankaku.bin
-	$(BIN2OBJ) $< $@ _hankaku
+	$(BIN2OBJ) $< $@ hankaku
 
 hankaku.bin : hankaku.txt
 	$(MAKEFONT) $< $@
