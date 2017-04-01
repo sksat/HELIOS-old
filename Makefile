@@ -10,7 +10,7 @@ CDIMG	:= HELIOS.iso
 export
 
 default:
-	make fdimg
+	make cdimg
 
 run:
 	make qemurun
@@ -64,3 +64,7 @@ clean:
 full:
 	make clean
 	make
+
+full_run:
+	make full
+	make run
