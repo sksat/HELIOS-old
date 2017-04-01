@@ -9,6 +9,9 @@ CXX	= g++
 
 CXXFLAGS= -m32 -Os -Wall -Werror=return-type -nostdinc -nostdlib -fno-builtin -std=c++1y -fno-exceptions -fno-rtti -fno-use-cxa-atexit -fno-threadsafe-statics
 
+%.obj : %.cc
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
 %.obj : %.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
