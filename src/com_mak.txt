@@ -5,6 +5,9 @@ MAKE	= make -r
 NASK	= $(Z_TOOLS)nask
 CC1	= $(Z_TOOLS)gocc1 -I $(INCPATH) -Os -Wall -quiet
 GAS2NASK= $(Z_TOOLS)gas2nask -a
+OBJ2BIM	= $(Z_TOOLS)obj2bim
+MAKEFONT= $(Z_TOOLS)makefont
+BIN2OBJ	= $(Z_TOOLS)bin2obj
 CXX	= g++
 
 CXXFLAGS= -m32 -Os -Wall -Werror=return-type -nostdinc -nostdlib -fno-builtin -std=c++1y -fno-exceptions -fno-rtti -fno-use-cxa-atexit -fno-threadsafe-statics

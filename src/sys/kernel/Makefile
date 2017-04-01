@@ -3,9 +3,11 @@ include ../../com_mak.txt
 
 SYS	= kernel.sys
 SYS_OBJS= startup.o main.o asmfunc.o
+SYS_OBJS+=font/hankaku.o
 LDSCRIPT= kernel.ld
 
 default	:
+	make -C font
 	make $(SYS)
 
 $(SYS)	: $(SYS_OBJS)
@@ -16,4 +18,5 @@ build:
 	cp $(SYS) $(DEPTH)$(BUILD_DIR)
 
 clean:
-	rm -f $(SYS)
+	make -C font clean
+	rm -f *.sys *.o
