@@ -17,7 +17,7 @@ int ScrnCtl::scrny	= 0;
 int ScrnCtl::bit	= 0;
 
 void ScrnCtl::BoxFill(unsigned char col, int x0, int y0, int x1, int y1){
-//	vram = (char*)0x000a0000;
+	vram = (char*)0x000a0000;
 	for(int y=y0; y<=y1; y++){
 		for(int x=x0; x<=x1; x++){
 			vram[y * scrnx + x] = col;
@@ -98,7 +98,7 @@ void QemuVgaCtl::ChangeMode(int scrnx, int scrny, int bit, bool clear_flg){
 
 	if((flg & 0x40) == 0){	// リニアアクセスモードじゃない
 		this->vram = (char*) 0x000a0000;
-	}else{
+	}else{			// リニアアクセスモード(QEMUでは未実装)
 		this->vram = (char*) 0xe0000000;
 	}
 
@@ -114,21 +114,49 @@ extern char hankaku[4096];
 
 class Tty : public ScrnCtl {
 public:
-	Tty(void) { font=(char*)hankaku; }
+	Tty();
 	void putchar(int x, int y, char col, char c);
+	void putchar(char c);
+	void puts(char* str);
 protected:
 	char* font;
+	int font_x, font_y;
+	int x, y;
 private:
 	void putfont8(int x, int y, char col, char *font);
 };
 
+Tty::Tty(){
+	font = (char*)hankaku;
+	font_x = 8;
+	font_y = 16;
+}
+
 void Tty::putchar(int x, int y, char col, char c){
 	if(font == nullptr) return;
 	if(font == (char*)hankaku){
-//		if(c*16 >= 4096) return;
+		if(c*16 >= 4096) return;
 		putfont8(x, y, col, font+c*16);
 	}
 	return;
+}
+
+void Tty::putchar(char c){
+	x += font_x;
+	if(x >= scrnx){
+		x = 0;
+		y += font_y;
+	}
+	if(y >= scrny) y = 0;
+	putchar(x, y, 15, c);
+}
+
+void Tty::puts(char *str){
+	for(;;){
+		putchar(*str);
+		str++;
+		if(*str == '\0') break;
+	}
 }
 
 void Tty::putfont8(int x, int y, char col, char *font){
@@ -137,7 +165,7 @@ void Tty::putfont8(int x, int y, char col, char *font){
 	for(int i=0; i<16; i++){
 		p = vram + (y+i) * scrnx + x;
 		d = font[i];
-		char k = 0x80;
+		unsigned char k = 0x80;
 		for(int j=0; j<8; j++){
 			if((d & k) != 0) { p[j] = col; }
 			k = k/2;
@@ -148,15 +176,15 @@ void Tty::putfont8(int x, int y, char col, char *font){
 
 int main(void){
 	QemuVgaCtl vga_ctl;
-	vga_ctl.ChangeMode(800, 600, 8, 0);
+	vga_ctl.ChangeMode(320, 200, 8, 0);
 
 	ScrnCtl scrn_ctl;
-	for(int i=0;;i+=2){
-		scrn_ctl.BoxFill(15, 0, 0, i, 0);
-	}
+	scrn_ctl.BoxFill(0, 0, 0, 320, 200);
 
 	Tty tty;
 	tty.putchar(100,100,15,'A');
+	tty.putchar(100,110,15,'B');
+	tty.puts("abyaaaaaaaaaaaaaaaaaaaaaaaaaahogeeeeeeeeeeeeeeeeeeeeeeeeee");
 /*
 	for(int i=0xa0000;i<=0xaffff;i++){
 		char *p;
