@@ -1,9 +1,10 @@
 DEPTH = ../../../
 include ../../com_mak.txt
 
-SYS	= kernel.sys
-SYS_OBJS= startup.o main.o asmfunc.o
-SYS_OBJS+=font/hankaku.o
+SYS	 = kernel.sys
+SYS_OBJS = startup.o main.o asmfunc.o
+SYS_OBJS +=dev/screen.o dev/qemu_vga.o
+SYS_OBJS +=font/hankaku.o
 LDSCRIPT= kernel.ld
 
 default	:
