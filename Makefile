@@ -15,6 +15,9 @@ default:
 run:
 	make qemurun
 
+qrun:
+	make qemurun
+
 qemurun:
 	make qemurun_cdimg
 
@@ -25,6 +28,16 @@ qemurun_fdimg:
 qemurun_cdimg:
 	make cdimg
 	qemu-system-x86_64 -drive format=raw,file=$(CDIMG)
+
+vrun:
+	make vboxrun
+
+vboxrun:
+	make vboxrun_cdimg
+
+vboxrun_cdimg:
+	make cdimg
+	vboxsdl --startvm $(TARGET)
 
 img:
 	make fdimg
