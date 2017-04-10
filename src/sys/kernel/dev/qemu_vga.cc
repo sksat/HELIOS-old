@@ -74,9 +74,9 @@ void QemuVgaCtl::ChangeMode(int scrnx, int scrny, int bit, bool clear_flg, int b
 	this->bit   = bit;
 
 //	if((flg & 0x40) == 0){	// リニアアクセスモードじゃない
-		vram = (char*) 0xa0000;
+//		this->vram = (char*) 0xa0000;
 //	}else{			// リニアアクセスモード(QEMUでは未実装)
-//		this->vram = (char*) 0xe0000000;
+		this->vram = (char*) 0xe0000000;
 //	}
 
 	return;
@@ -98,13 +98,21 @@ void QemuVgaCtl::_PutPixel(unsigned char col, int x, int y){
 
 	int bank = 0;
 	if(addr != 0){
-		bank = addr/(320*200);
+//		bank = addr/(320*200);
+		for(int i=1;;i++){
+			if(addr > 0xffff*i){
+				bank=i;
+			}else{
+				break;
+			}
+		}
 	}
 	if(bank != cur_bank){
 		ChangeMode(scrnx, scrny, bit, 0, bank);
 	}
-	addr -= bank * 320 * 200;
-	vram = (char*)0xa0000;
+	cur_bank = bank;
+	addr -= bank * 0xffff;
+//	vram = (char*)0xa0000;
 	vram[addr] = col;
 	return;
 }

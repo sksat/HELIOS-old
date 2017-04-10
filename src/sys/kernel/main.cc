@@ -54,14 +54,14 @@ void Tty::puts(char *str){
 }
 
 void Tty::putfont8(int x, int y, char col, char *font){
-	char *p, d /* data */;
-	vram = (char*)0xa0000;
+	char d /* data */;
+	int addr;
 	for(int i=0; i<16; i++){
-		p = vram + (y+i) * scrnx + x;
+		addr = (y+i) * scrnx + x;
 		d = font[i];
 		unsigned char k = 0x80;
 		for(int j=0; j<8; j++){
-			if((d & k) != 0) { p[j] = col; }
+			if((d & k) != 0) { PutPixel(col, x+j, y+i); }
 			k = k/2;
 		}
 	}
@@ -72,16 +72,9 @@ void Tty::putfont8(int x, int y, char col, char *font){
 int main(void){
 	QemuVgaCtl vga_ctl;
 	vga_ctl.Init();
-	vga_ctl.ChangeMode(800, 600, 8, 0);
+	vga_ctl.ChangeMode(1024, 600, 8, 0);
 
-	vga_ctl.BoxFill(15, 0, 0, 800, 600);
-	for(int x=0;x<320;x++){
-		for(int y=0;y<200;y++){
-//			char* vram = (char*)0xa0000;
-//			vram[320*y+x] = 15;
-//			vga_ctl._PutPixel(15,x,y);
-		}
-	}
+	vga_ctl.BoxFill(0, 0, 0, 800, 600);
 
 	Tty tty;
 	tty.putchar(100,100,15,'A');
